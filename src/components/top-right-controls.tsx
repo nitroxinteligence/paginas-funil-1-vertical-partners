@@ -20,7 +20,7 @@ export function TopRightControls() {
   return (
     <div className="pointer-events-none fixed right-4 top-4 z-50 flex items-center gap-3 sm:right-6 sm:top-6">
       <div className="pointer-events-auto rounded-[55px] border border-black/10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-700 px-4 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.35)] dark:border-white/10">
-        <span className="bg-gradient-to-r from-sky-300 via-blue-500 to-indigo-500 bg-clip-text text-sm font-semibold text-transparent sm:text-base">
+        <span className="bg-gradient-to-r from-sky-300 via-sky-500 to-blue-600 bg-clip-text text-sm font-semibold text-transparent sm:text-base">
           Vertical Partners
         </span>
       </div>
