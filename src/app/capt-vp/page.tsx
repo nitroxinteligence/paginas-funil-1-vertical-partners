@@ -256,7 +256,7 @@ export default function Page() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main className="relative min-h-screen overflow-hidden bg-white text-slate-900 transition-colors dark:bg-black dark:text-white">
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 pt-24 pb-16 sm:pt-28 sm:pb-20">
         {step === 1 && (
           <section className="space-y-6">
@@ -265,7 +265,7 @@ export default function Page() {
                 Veja com seus próprios olhos por que essa IA
                 está deixando empresários e infoprodutores desconfortáveis.
               </h1>
-              <div className="space-y-4 text-white/85 font-medium text-base leading-relaxed sm:text-lg">
+              <div className="space-y-4 text-slate-700 font-medium text-base leading-relaxed sm:text-lg dark:text-white/85">
                 <p>Não é venda. Não é promessa. É demonstração!</p>
                 <p>
                   Se você é dono de negócio e ainda resolve tudo na unha, com
@@ -275,7 +275,7 @@ export default function Page() {
                 <p>Você não está se cadastrando. Está se qualificando!</p>
               </div>
             </div>
-            <Card className="border-white/10 bg-black text-white">
+            <Card className="border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-black dark:text-white">
               <CardContent className="space-y-4">
                 <form
                   className="space-y-4"
@@ -285,7 +285,7 @@ export default function Page() {
                   }}
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="nome" className="text-white">
+                    <Label htmlFor="nome" className="text-slate-900 dark:text-white">
                       Digite seu nome completo
                     </Label>
                     <Input
@@ -293,11 +293,11 @@ export default function Page() {
                       name="nome"
                       autoComplete="name"
                       required
-                      className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                      className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="whatsapp" className="text-white">
+                    <Label htmlFor="whatsapp" className="text-slate-900 dark:text-white">
                       Me diga o seu WhatsApp?
                     </Label>
                   <Input
@@ -310,18 +310,18 @@ export default function Page() {
                     onChange={(event) => {
                       setWhatsappValue(formatWhatsapp(event.target.value));
                     }}
-                    className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                    className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                   />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="instagram" className="text-white">
+                    <Label htmlFor="instagram" className="text-slate-900 dark:text-white">
                       Quer inserir seu instagram? Personalizamos ainda mais sua jornada.
                     </Label>
                   <Input
                     id="instagram"
                     name="instagram"
                     autoComplete="username"
-                    className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                    className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                   />
                   </div>
                   <ShinyButton type="submit" className="w-full justify-center">
@@ -340,8 +340,8 @@ export default function Page() {
                 Nós testamos de tudo para fazer você chegar até o final deste
                 fluxo e o que deu certo foram duas coisas…
               </h1>
-              <div className="space-y-4 text-white/85 font-medium text-base leading-relaxed sm:text-lg">
-                <Card className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-none">
+              <div className="space-y-4 text-slate-700 font-medium text-base leading-relaxed sm:text-lg dark:text-white/85">
+                <Card className="rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-white">
                   <CardContent className="space-y-4 px-4 py-5 sm:px-6">
                     <Card className="gap-0 border-emerald-400/20 bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-lime-400/15 py-4 text-emerald-50 shadow-none">
                       <CardContent className="flex items-start gap-3 px-4 sm:px-6">
@@ -378,9 +378,9 @@ export default function Page() {
                         </div>
                       </CardContent>
                     </Card>
-                    <Card className="gap-0 border-white/15 bg-gradient-to-br from-white/12 via-white/6 to-white/16 py-4 text-white/90 shadow-none">
+                    <Card className="gap-0 border-slate-200 bg-gradient-to-br from-slate-100 via-white to-slate-200 py-4 text-slate-900/90 shadow-none dark:border-white/15 dark:from-white/12 dark:via-white/6 dark:to-white/16 dark:text-white/90">
                       <CardContent className="flex items-center gap-3 px-4 sm:px-6">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-lg font-semibold text-white/80">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-lg font-semibold text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80">
                           2
                         </div>
                         <p className="min-w-0 text-left text-sm font-medium sm:text-base">
@@ -394,13 +394,13 @@ export default function Page() {
                   <div className="flex flex-col items-center gap-6 py-6">
                     <Button
                       variant="outline"
-                      className="group w-full bg-white text-base font-medium text-black shadow-[0_0_32px_rgba(255,255,255,0.22)] hover:bg-white focus-visible:bg-white hover:text-black focus-visible:text-black [&_svg]:text-black hover:[&_svg]:text-black sm:w-[320px] sm:text-lg sm:hover:w-[360px] h-14 px-10 sm:h-16 sm:px-14 transition-[width] duration-200 ease-out"
+                      className="group w-full bg-black text-base font-medium text-white shadow-[0_0_32px_rgba(15,23,42,0.18)] hover:bg-black/90 focus-visible:bg-black/90 hover:text-white focus-visible:text-white [&_svg]:text-white hover:[&_svg]:text-white sm:w-[320px] sm:text-lg sm:hover:w-[360px] h-14 px-10 sm:h-16 sm:px-14 transition-[width] duration-200 ease-out dark:bg-white dark:text-black dark:shadow-[0_0_32px_rgba(255,255,255,0.22)] dark:hover:bg-white dark:focus-visible:bg-white dark:hover:text-black dark:focus-visible:text-black dark:[&_svg]:text-black dark:hover:[&_svg]:text-black"
                       onClick={() => setShowDetails(true)}
                     >
                       <span>Clique para entender tudo!</span>
-                      <ArrowDown className="ml-2 size-4 -translate-y-0.5 opacity-80 text-black" />
+                      <ArrowDown className="ml-2 size-4 -translate-y-0.5 opacity-80 text-white dark:text-black" />
                     </Button>
-                    <div className="h-px w-full bg-white/10" />
+                    <div className="h-px w-full bg-slate-200 dark:bg-white/10" />
                   </div>
                 )}
                 {showDetails && (
@@ -425,13 +425,13 @@ export default function Page() {
                       <div className="flex flex-col items-center gap-6 py-6">
                       <Button
                         variant="outline"
-                        className="group w-full bg-white text-base font-medium text-black shadow-[0_0_32px_rgba(255,255,255,0.22)] hover:bg-white focus-visible:bg-white hover:text-black focus-visible:text-black [&_svg]:text-black hover:[&_svg]:text-black sm:w-[400px] sm:text-lg sm:hover:w-[480px] h-14 px-10 sm:h-16 sm:px-14 transition-[width] duration-200 ease-out"
+                        className="group w-full bg-black text-base font-medium text-white shadow-[0_0_32px_rgba(15,23,42,0.18)] hover:bg-black/90 focus-visible:bg-black/90 hover:text-white focus-visible:text-white [&_svg]:text-white hover:[&_svg]:text-white sm:w-[400px] sm:text-lg sm:hover:w-[480px] h-14 px-10 sm:h-16 sm:px-14 transition-[width] duration-200 ease-out dark:bg-white dark:text-black dark:shadow-[0_0_32px_rgba(255,255,255,0.22)] dark:hover:bg-white dark:focus-visible:bg-white dark:hover:text-black dark:focus-visible:text-black dark:[&_svg]:text-black dark:hover:[&_svg]:text-black"
                         onClick={() => setShowChoices(true)}
                       >
                         Clique para escolher qual fluxo seguir!
-                          <ArrowRight className="ml-2 size-4 -translate-y-0.5 opacity-80 text-black" />
+                          <ArrowRight className="ml-2 size-4 -translate-y-0.5 opacity-80 text-white dark:text-black" />
                         </Button>
-                        <div className="h-px w-full bg-white/10" />
+                        <div className="h-px w-full bg-slate-200 dark:bg-white/10" />
                       </div>
                     )}
                   </div>
@@ -439,28 +439,28 @@ export default function Page() {
                 {showChoices && (
                   <div className="space-y-4 animate-in fade-in duration-500 mt-14">
                     <div className="grid gap-6 sm:grid-cols-2 sm:gap-8 mx-auto w-full max-w-6xl justify-items-center">
-                      <Card className="w-full sm:max-w-[660px] border border-zinc-800 bg-gradient-to-br from-[#1b1b1f] via-[#131318] to-[#0d0d12] text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                      <Card className="w-full sm:max-w-[660px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-zinc-800 dark:from-[#1b1b1f] dark:via-[#131318] dark:to-[#0d0d12] dark:text-white dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
                         <CardContent className="space-y-4 px-5 py-6 sm:px-8 sm:py-8">
                           <p className="text-base font-medium sm:text-lg">
                             Quero assistir o vídeo criado por especialistas da Vertical Partners.
                           </p>
                           <Button
                             variant="outline"
-                            className="w-full h-14 sm:h-16 text-base sm:text-lg border-white/40 bg-transparent text-white hover:bg-white/10 px-6 sm:px-8"
+                            className="w-full h-14 sm:h-16 text-base sm:text-lg border-slate-300 bg-transparent text-slate-900 hover:bg-slate-100 px-6 sm:px-8 dark:border-white/40 dark:text-white dark:hover:bg-white/10"
                             onClick={() => setStep(3)}
                           >
                             Assistir vídeo
                           </Button>
                         </CardContent>
                       </Card>
-                      <Card className="w-full sm:max-w-[660px] border border-zinc-800 bg-gradient-to-br from-[#1b1b1f] via-[#131318] to-[#0d0d12] text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                      <Card className="w-full sm:max-w-[660px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-zinc-800 dark:from-[#1b1b1f] dark:via-[#131318] dark:to-[#0d0d12] dark:text-white dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
                         <CardContent className="space-y-4 px-5 py-6 sm:px-8 sm:py-8">
                           <p className="text-base font-medium sm:text-lg">
                             Quero ir direto para o WhatsApp e conhecer mais sobre a Vertical Partners.
                           </p>
                           <Button
                             asChild
-                            className="w-full h-14 sm:h-16 text-base sm:text-lg bg-white text-black hover:bg-white/90 px-6 sm:px-8"
+                            className="w-full h-14 sm:h-16 text-base sm:text-lg bg-black text-white hover:bg-black/90 px-6 sm:px-8 dark:bg-white dark:text-black dark:hover:bg-white/90"
                           >
                             <a
                               href={whatsappLink}
@@ -488,9 +488,9 @@ export default function Page() {
                 80% seu custo operacional e aumentar em até 3X seu faturamento líquido nos próximos 90 dias
               </h1>
             </div>
-            <Card className="border-white/10 bg-black text-white">
-              <CardContent className="space-y-4 text-white/85">
-                <div className="flex items-center justify-center rounded-lg border border-white/15 bg-black/40 px-4 py-16 text-center text-sm uppercase tracking-[0.2em] text-white/60 sm:py-20">
+            <Card className="border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-black dark:text-white">
+              <CardContent className="space-y-4 text-slate-700 dark:text-white/85">
+                <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-100/80 px-4 py-16 text-center text-sm uppercase tracking-[0.2em] text-slate-500 sm:py-20 dark:border-white/15 dark:bg-black/40 dark:text-white/60">
                   Espaço para o vídeo
                 </div>
                 <div className="flex justify-center">
@@ -506,19 +506,19 @@ export default function Page() {
             </Card>
           </section>
         )}
-        <footer className="mt-12 border-t border-white/10 pt-8 text-sm text-white/70">
+        <footer className="mt-12 border-t border-slate-200 pt-8 text-sm text-slate-600 dark:border-white/10 dark:text-white/70">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
-              <p className="text-base font-semibold text-white">Vertical Partners</p>
-              <p className="text-xs text-white/60">IA aplicada para acelerar crescimento e eficiência.</p>
+              <p className="text-base font-semibold text-slate-900 dark:text-white">Vertical Partners</p>
+              <p className="text-xs text-slate-500 dark:text-white/60">IA aplicada para acelerar crescimento e eficiência.</p>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-white/60">
-              <span className="rounded-full border border-white/10 px-3 py-1">Termos</span>
-              <span className="rounded-full border border-white/10 px-3 py-1">Privacidade</span>
-              <span className="rounded-full border border-white/10 px-3 py-1">Contato</span>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-white/60">
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Termos</span>
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Privacidade</span>
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Contato</span>
             </div>
           </div>
-          <div className="mt-4 text-xs text-white/50">© {new Date().getFullYear()} Vertical Partners. Todos os direitos reservados.</div>
+          <div className="mt-4 text-xs text-slate-500 dark:text-white/50">© {new Date().getFullYear()} Vertical Partners. Todos os direitos reservados.</div>
         </footer>
       </div>
     </main>

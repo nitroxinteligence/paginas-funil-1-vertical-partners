@@ -239,7 +239,7 @@ export default function Page() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main className="relative min-h-screen overflow-hidden bg-white text-slate-900 transition-colors dark:bg-black dark:text-white">
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 pt-24 pb-16 sm:pt-28 sm:pb-20">
         <section className="space-y-6">
           {step === 1 && (
@@ -249,15 +249,15 @@ export default function Page() {
                   Veja com seus próprios olhos por que essa IA
                   está deixando empresários e infoprodutores desconfortáveis.
                 </h1>
-                <div className="space-y-3 text-white/85 font-medium text-base leading-relaxed sm:text-lg">
+                <div className="space-y-3 text-slate-700 font-medium text-base leading-relaxed sm:text-lg dark:text-white/85">
                   <p>
                     Se você é dono de negócio e ainda resolve tudo na unha, com equipe operacional preguiçosa, talvez assistir esse vídeo de x minutos te incomode um pouco.
                   </p>
-                  <p className="text-xl font-semibold text-white sm:text-2xl">Preencha os dados e se surpreenda.</p>
+                  <p className="text-xl font-semibold text-slate-900 sm:text-2xl dark:text-white">Preencha os dados e se surpreenda.</p>
                 </div>
               </div>
 
-            <Card className="border-white/10 bg-black text-white">
+            <Card className="border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-black dark:text-white">
               <CardContent className="space-y-4">
                 <form
                   className="space-y-4"
@@ -267,7 +267,7 @@ export default function Page() {
                   }}
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="nome" className="text-white">
+                    <Label htmlFor="nome" className="text-slate-900 dark:text-white">
                       Digite seu nome completo
                     </Label>
                     <Input
@@ -275,11 +275,11 @@ export default function Page() {
                       name="nome"
                       autoComplete="name"
                       required
-                      className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                      className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="whatsapp" className="text-white">
+                    <Label htmlFor="whatsapp" className="text-slate-900 dark:text-white">
                       Me diga o seu WhatsApp?
                     </Label>
                     <Input
@@ -290,18 +290,18 @@ export default function Page() {
                       required
                       value={whatsappValue}
                       onChange={(event) => setWhatsappValue(formatWhatsapp(event.target.value))}
-                      className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                      className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="instagram" className="text-white">
+                    <Label htmlFor="instagram" className="text-slate-900 dark:text-white">
                       Quer inserir seu instagram? Personalizamos ainda mais sua jornada.
                     </Label>
                     <Input
                       id="instagram"
                       name="instagram"
                       autoComplete="username"
-                      className="border-white/15 bg-black text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
+                      className="border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-400 focus-visible:ring-slate-300 dark:border-white/15 dark:bg-black dark:text-white dark:placeholder:text-white/40 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/20"
                     />
                   </div>
                   <ShinyButton type="submit" className="w-full justify-center">
@@ -318,9 +318,9 @@ export default function Page() {
               <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">
                 ASSISTA ESSE VÍDEO DE 3min e ENTENDA COMO VAMOS DIMINUIR EM ATÉ 80% SEU CUSTO OPERACIONAL E AUMENTAR EM ATÉ 3X SEU FATURAMENTO LÍQUIDO NOS PRÓXIMOS 90 DIAS
               </h2>
-              <Card className="border-white/10 bg-black text-white">
-                <CardContent className="space-y-4 text-white/85">
-                  <div className="flex items-center justify-center rounded-lg border border-white/15 bg-black/40 px-4 py-16 text-center text-sm uppercase tracking-[0.2em] text-white/60 sm:py-20">
+              <Card className="border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-black dark:text-white">
+                <CardContent className="space-y-4 text-slate-700 dark:text-white/85">
+                  <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-100/80 px-4 py-16 text-center text-sm uppercase tracking-[0.2em] text-slate-500 sm:py-20 dark:border-white/15 dark:bg-black/40 dark:text-white/60">
                     VIDEO DE APRESENTAÇÃO
                   </div>
                   <ShinyButton href={whatsappLink} target="_blank" rel="noreferrer" className="w-full justify-center">
@@ -332,19 +332,19 @@ export default function Page() {
           )}
         </section>
 
-        <footer className="mt-6 border-t border-white/10 pt-8 text-sm text-white/70">
+        <footer className="mt-6 border-t border-slate-200 pt-8 text-sm text-slate-600 dark:border-white/10 dark:text-white/70">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
-              <p className="text-base font-semibold text-white">Vertical Partners</p>
-              <p className="text-xs text-white/60">IA aplicada para acelerar crescimento e eficiência.</p>
+              <p className="text-base font-semibold text-slate-900 dark:text-white">Vertical Partners</p>
+              <p className="text-xs text-slate-500 dark:text-white/60">IA aplicada para acelerar crescimento e eficiência.</p>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-white/60">
-              <span className="rounded-full border border-white/10 px-3 py-1">Termos</span>
-              <span className="rounded-full border border-white/10 px-3 py-1">Privacidade</span>
-              <span className="rounded-full border border-white/10 px-3 py-1">Contato</span>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-white/60">
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Termos</span>
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Privacidade</span>
+              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Contato</span>
             </div>
           </div>
-          <div className="mt-4 text-xs text-white/50">© {new Date().getFullYear()} Vertical Partners. Todos os direitos reservados.</div>
+          <div className="mt-4 text-xs text-slate-500 dark:text-white/50">© {new Date().getFullYear()} Vertical Partners. Todos os direitos reservados.</div>
         </footer>
       </div>
     </main>
