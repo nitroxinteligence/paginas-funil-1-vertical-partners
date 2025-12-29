@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { MeshGradient, Dithering } from "@paper-design/shaders-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -241,26 +240,6 @@ export default function Page() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
-      <div
-        className="pointer-events-none absolute inset-x-0 -top-16 h-72 overflow-hidden sm:-top-24 sm:h-96"
-        aria-hidden="true"
-      >
-        <MeshGradient
-          colors={["#5b00ff", "#00ffa3", "#ff9a00", "#ea00ff"]}
-          swirl={0.5}
-          distortion={0.85}
-          speed={0.12}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-        />
-        <Dithering
-          colors={["#ffffff", "#f2f2f2", "#eaeaea"]}
-          intensity={0.18}
-          shape="simplex"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-black" />
-      </div>
-
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 pt-24 pb-16 sm:pt-28 sm:pb-20">
         <section className="space-y-6">
           {step === 1 && (
