@@ -251,7 +251,6 @@ export default function Page() {
           speed={0.12}
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         />
-        {/* @ts-expect-error shadcn preset uses colors/intensity props */}
         <Dithering
           colors={["#ffffff", "#f2f2f2", "#eaeaea"]}
           intensity={0.18}
