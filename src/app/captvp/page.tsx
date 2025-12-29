@@ -251,7 +251,7 @@ export default function Page() {
                 </h1>
                 <div className="space-y-3 text-slate-700 font-medium text-base leading-relaxed sm:text-lg dark:text-white/85">
                   <p>
-                    Se você é dono de negócio e ainda resolve tudo na unha, com equipe operacional preguiçosa, talvez assistir esse vídeo de x minutos te incomode um pouco.
+                    Se você é dono de negócio e ainda resolve tudo na unha, com equipe operacional preguiçosa, talvez assistir esse vídeo de 3 minutos te incomode um pouco.
                   </p>
                   <p className="text-xl font-semibold text-slate-900 sm:text-2xl dark:text-white">Preencha os dados e se surpreenda.</p>
                 </div>
