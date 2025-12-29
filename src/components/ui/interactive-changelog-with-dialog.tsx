@@ -95,8 +95,8 @@ export const Component = () => {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         />
         <Dithering
-          colors={["#ffffff", "#f2f2f2", "#eaeaea"]}
-          intensity={0.18}
+          colorBack="#ffffff00"
+          colorFront="#ffffff2e"
           shape="simplex"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         />
