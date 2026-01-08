@@ -123,3 +123,22 @@
     @apply bg-black text-white;
   }
 }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1d4ed8 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #38bdf8 0%, #2563eb 50%, #1e3a8a 100%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+}

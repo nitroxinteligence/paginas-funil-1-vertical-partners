@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowDown, ArrowRight } from "lucide-react";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 
 const whatsappMessage =
   "Olá! Vim do site da Vertical Partners e gostaria de saber mais sobre as soluçoes de IA da Vertical.";
@@ -224,6 +226,8 @@ export default function Page() {
   const [whatsappValue, setWhatsappValue] = useState("");
   const [showDetails, setShowDetails] = useState(false);
   const [showChoices, setShowChoices] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const formatWhatsapp = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -255,6 +259,47 @@ export default function Page() {
     return formatted;
   };
 
+  const handleLeadSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+    const nome = String(formData.get("nome") || "").trim();
+    const whatsapp = String(formData.get("whatsapp") || "").trim();
+    const instagramValue = String(formData.get("instagram") || "").trim();
+    const instagram = instagramValue.length ? instagramValue : null;
+
+    if (!nome || !whatsapp) {
+      setSubmitError("Preencha nome e WhatsApp para continuar.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setSubmitError("Supabase não configurado. Preencha o .env com as credenciais.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("leads_capt_vp")
+      .insert([{ nome, whatsapp, instagram }]);
+
+    if (error) {
+      console.error("Supabase insert failed:", error);
+      setSubmitError("Não foi possível enviar seus dados agora. Tente novamente.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
+    setStep(2);
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-white text-slate-900 transition-colors dark:bg-black dark:text-white">
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 pt-24 pb-16 sm:pt-28 sm:pb-20">
@@ -262,8 +307,12 @@ export default function Page() {
           <section className="space-y-6">
             <div className="space-y-4 text-center">
               <h1 className="text-3xl font-normal leading-tight text-balance sm:text-5xl lg:text-5xl">
-                Veja com seus próprios olhos por que essa IA
-                está deixando empresários e infoprodutores desconfortáveis.
+                Veja com seus próprios olhos{" "}
+                <span className="bg-gradient-to-r from-blue-300 via-blue-300 to-blue-200 bg-clip-text font-semibold text-transparent">
+                  por que essa IA está deixando empresários
+                </span>{" "}
+                e infoprodutores{" "}
+                <span className="text-blue-200 font-semibold">desconfortáveis.</span>
               </h1>
               <div className="space-y-4 text-slate-700 font-medium text-base leading-relaxed sm:text-lg dark:text-white/85">
                 <p>Não é venda. Não é promessa. É demonstração!</p>
@@ -277,13 +326,7 @@ export default function Page() {
             </div>
             <Card className="border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-black dark:text-white">
               <CardContent className="space-y-4">
-                <form
-                  className="space-y-4"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    setStep(2);
-                  }}
-                >
+                <form className="space-y-4" onSubmit={handleLeadSubmit}>
                   <div className="space-y-2">
                     <Label htmlFor="nome" className="text-slate-900 dark:text-white">
                       Digite seu nome completo
@@ -325,8 +368,13 @@ export default function Page() {
                   />
                   </div>
                   <ShinyButton type="submit" className="w-full justify-center">
-                    Quero prosseguir
+                    {isSubmitting ? "Enviando..." : "Quero prosseguir"}
                   </ShinyButton>
+                  {submitError && (
+                    <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                      {submitError}
+                    </p>
+                  )}
                 </form>
               </CardContent>
             </Card>
@@ -506,15 +554,27 @@ export default function Page() {
             </Card>
           </section>
         )}
-        <footer className="mt-12 border-t border-slate-200 pt-8 text-sm text-slate-600 dark:border-white/10 dark:text-white/70">
+      </div>
+      <div className="mx-auto w-full max-w-5xl px-6 pb-16 sm:pb-20">
+        <footer className="mt-20 w-full rounded-[50px] border border-slate-700/40 px-16 py-20 text-sm text-slate-600 sm:px-20 sm:py-24 dark:border-white/15 dark:text-white/70">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
               <p className="text-base font-semibold text-slate-900 dark:text-white">Vertical Partners</p>
               <p className="text-xs text-slate-500 dark:text-white/60">IA aplicada para acelerar crescimento e eficiência.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-white/60">
-              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Termos</span>
-              <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Privacidade</span>
+              <Link
+                href="/termos-de-uso"
+                className="rounded-full border border-slate-200 px-3 py-1 transition-colors hover:border-slate-300 dark:border-white/10 dark:hover:border-white/30"
+              >
+                Termos
+              </Link>
+              <Link
+                href="/politica-de-privacidade"
+                className="rounded-full border border-slate-200 px-3 py-1 transition-colors hover:border-slate-300 dark:border-white/10 dark:hover:border-white/30"
+              >
+                Privacidade
+              </Link>
               <span className="rounded-full border border-slate-200 px-3 py-1 dark:border-white/10">Contato</span>
             </div>
           </div>
