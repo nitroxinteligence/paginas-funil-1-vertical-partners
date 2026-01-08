@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/V.svg" type="image/svg+xml" />
+    <title>Vertical Partners - Ecossistema RAA com IA para Empresas</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        var modalAudioNeedle = "audio-final-lp-funil-1.mp3";
+        var modalTextNeedles = [
+          "agora olha o seu whatsapp",
+          "brincadeira está apenas começando",
+        ];
+
+        window.stopAllAudio = function () {
+          var audios = document.querySelectorAll("audio");
+          audios.forEach(function (audio) {
+            try {
+              var src = audio.getAttribute("src") || "";
+              if (src.indexOf(modalAudioNeedle) !== -1) {
+                audio.muted = true;
+                audio.volume = 0;
+                audio.autoplay = false;
+                audio.pause();
+                audio.remove();
+              }
+            } catch (error) {}
+          });
+        };
+
+        window.blockAudioPlay = function () {
+          if (window.__vpModalAudioBlocked) return;
+          window.__vpModalAudioBlocked = true;
+
+          var originalPlay = HTMLMediaElement.prototype.play;
+          HTMLMediaElement.prototype.play = function () {
+            try {
+              var src = this.getAttribute("src") || "";
+              if (src.indexOf(modalAudioNeedle) !== -1) {
+                this.muted = true;
+                this.volume = 0;
+                this.autoplay = false;
+                return Promise.resolve();
+              }
+            } catch (error) {}
+            return originalPlay.apply(this, arguments);
+          };
+        };
+
+        var findOverlay = function (node) {
+          var current = node;
+          while (current && current !== document.body) {
+            var className = current.className || "";
+            if (
+              className.indexOf("fixed") !== -1 &&
+              className.indexOf("inset-0") !== -1 &&
+              className.indexOf("z-50") !== -1
+            ) {
+              return current;
+            }
+            current = current.parentElement;
+          }
+          return null;
+        };
+
+        var hideModal = function (node) {
+          var modal =
+            node.closest('[role="dialog"]') ||
+            node.closest('[aria-modal="true"]') ||
+            findOverlay(node);
+          if (modal) {
+            modal.style.opacity = "0";
+            modal.style.pointerEvents = "none";
+            modal.style.visibility = "hidden";
+            modal.style.display = "none";
+          }
+          var overlay = findOverlay(node);
+          if (overlay) {
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+            overlay.style.visibility = "hidden";
+            overlay.style.display = "none";
+          }
+          if (document.body && document.body.classList) {
+            document.body.classList.remove("overflow-hidden");
+          }
+        };
+
+        var scan = function () {
+          var modalAudio = document.querySelector(
+            'audio[src*="' + modalAudioNeedle + '"]'
+          );
+          if (modalAudio) {
+            hideModal(modalAudio);
+            window.stopAllAudio();
+          }
+
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"],[aria-modal="true"]'
+          );
+          dialogs.forEach(function (dialog) {
+            var textLower = (dialog.textContent || "").toLowerCase();
+            var matches = modalTextNeedles.some(function (needle) {
+              return textLower.indexOf(needle) !== -1;
+            });
+            if (matches) {
+              hideModal(dialog);
+            }
+          });
+
+          var overlays = document.querySelectorAll(
+            'div[class*="fixed"][class*="inset-0"][class*="z-50"]'
+          );
+          overlays.forEach(function (overlay) {
+            var overlayText = (overlay.textContent || "").toLowerCase();
+            var hasAudio = overlay.querySelector(
+              'audio[src*="' + modalAudioNeedle + '"]'
+            );
+            var matches = modalTextNeedles.some(function (needle) {
+              return overlayText.indexOf(needle) !== -1;
+            });
+            if (matches || hasAudio) {
+              hideModal(overlay);
+            }
+          });
+        };
+
+        var observer = new MutationObserver(function () {
+          scan();
+        });
+
+        window.blockAudioPlay();
+        window.addEventListener("load", scan);
+        setTimeout(scan, 800);
+
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        var headingMatch = "Veja como foi e como será";
+        var cardText =
+          "Nossa Agente IA te enviou uma mensagem agora mesmo no WhatsApp.";
+
+        var adjustSpacing = function () {
+          var headings = document.querySelectorAll("h1,h2,h3");
+          headings.forEach(function (heading) {
+            var text = (heading.textContent || "").trim();
+            if (text.indexOf(headingMatch) !== -1) {
+              heading.style.marginBottom = "1.25rem";
+              if (heading.parentElement) {
+                heading.parentElement.style.marginTop = "6rem";
+              }
+              var timeline = heading.nextElementSibling;
+              if (timeline) {
+                timeline.style.marginTop = "0.25rem";
+              }
+            }
+          });
+        };
+
+        var tweakTimeline = function () {
+          var heading = null;
+          document.querySelectorAll("h1,h2,h3").forEach(function (node) {
+            var text = (node.textContent || "").trim();
+            if (!heading && text.indexOf(headingMatch) !== -1) {
+              heading = node;
+            }
+          });
+
+          var root =
+            heading && heading.parentElement
+              ? heading.parentElement.querySelector('div[class*="max-w-5xl"]')
+              : null;
+
+          if (!root) return;
+
+          var items = root.querySelectorAll("div");
+          items.forEach(function (item) {
+            var className = item.className || "";
+            if (
+              className.indexOf("flex") !== -1 &&
+              className.indexOf("justify-center") !== -1 &&
+              className.indexOf("pt-20") !== -1
+            ) {
+              item.style.paddingTop = "3.5rem";
+            }
+
+            if (className.indexOf("sticky") !== -1) {
+              item.style.top = "6rem";
+            }
+          });
+
+          var line = null;
+          items.forEach(function (item) {
+            var className = item.className || "";
+            if (
+              className.indexOf("w-[2px]") !== -1 &&
+              className.indexOf("bg-[linear-gradient") !== -1
+            ) {
+              line = item;
+            }
+          });
+
+          if (line) {
+            line.style.height = root.offsetHeight + "px";
+          }
+        };
+
+        var createWhatsappButton = function () {
+          var message =
+            "Olá! Vim pelo site da Vertical Partners e estou interessado nas soluções.";
+          var whatsappUrl =
+            "https://wa.me/5548996940931?text=" +
+            encodeURIComponent(message);
+          var wrapper = document.createElement("div");
+          wrapper.setAttribute("data-whatsapp-cta", "true");
+          wrapper.style.marginTop = "2.5rem";
+          wrapper.style.display = "flex";
+          wrapper.style.justifyContent = "center";
+
+          var button = document.createElement("a");
+          button.href = whatsappUrl;
+          button.target = "_blank";
+          button.rel = "noopener noreferrer";
+          button.style.display = "inline-flex";
+          button.style.alignItems = "center";
+          button.style.gap = "12px";
+          button.style.padding = "18px 28px";
+          button.style.borderRadius = "999px";
+          button.style.border = "none";
+          button.style.cursor = "pointer";
+          button.style.background = "#22c55e";
+          button.style.color = "#0b0b0b";
+          button.style.fontSize = "1.05rem";
+          button.style.fontWeight = "600";
+          button.style.boxShadow = "0 14px 30px rgba(34, 197, 94, 0.35)";
+          button.style.textDecoration = "none";
+
+          var icon = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+          );
+          icon.setAttribute("viewBox", "0 0 24 24");
+          icon.setAttribute("width", "20");
+          icon.setAttribute("height", "20");
+          icon.setAttribute("aria-hidden", "true");
+          icon.style.fill = "currentColor";
+
+          var path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+          );
+          path.setAttribute(
+            "d",
+            "M12.04 2.01c-5.51 0-9.99 4.48-9.99 9.99 0 1.77.46 3.5 1.33 5.04L2 22l5.13-1.35a9.94 9.94 0 004.91 1.31h.01c5.51 0 9.99-4.48 9.99-9.99S17.56 2.01 12.04 2.01zm5.83 14.34c-.25.7-1.45 1.35-2 1.43-.52.08-1.19.12-1.92-.12-.44-.14-1-.32-1.72-.64-3.03-1.31-5.01-4.36-5.16-4.56-.15-.2-1.23-1.64-1.23-3.12 0-1.48.77-2.21 1.04-2.51.27-.3.59-.38.79-.38.2 0 .4 0 .58.01.19.01.44-.07.69.53.25.6.85 2.1.92 2.25.07.15.12.33.02.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.3.31-.13.61.17.3.76 1.24 1.64 2.01 1.13.99 2.08 1.3 2.38 1.45.3.15.47.13.65-.08.18-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.7.8 1.99.94.29.14.49.21.56.33.07.12.07.7-.18 1.4z"
+          );
+          icon.appendChild(path);
+
+          var text = document.createElement("span");
+          text.textContent = "Quero meu ecossistema agora";
+
+          button.appendChild(icon);
+          button.appendChild(text);
+          wrapper.appendChild(button);
+          return wrapper;
+        };
+
+        var replaceCard = function () {
+          var match = null;
+          document.querySelectorAll("p,div,span").forEach(function (node) {
+            if (match) return;
+            var text = (node.textContent || "").trim();
+            if (text === cardText) {
+              match = node;
+            }
+          });
+
+          if (!match) return;
+
+          var container = match.closest("div");
+          if (!container) return;
+
+          if (container.getAttribute("data-replaced") === "true") {
+            return;
+          }
+
+          container.setAttribute("data-replaced", "true");
+          container.style.display = "none";
+
+          var buttonWrapper = createWhatsappButton();
+          if (container.parentElement) {
+            container.parentElement.insertBefore(
+              buttonWrapper,
+              container.nextSibling
+            );
+          }
+        };
+
+        var buildFooter = function () {
+          var wrapper = document.createElement("div");
+          wrapper.setAttribute("data-vp-footer-wrapper", "true");
+          wrapper.style.maxWidth = "1120px";
+          wrapper.style.margin = "0 auto";
+          wrapper.style.padding = "0 24px 64px";
+
+          var footer = document.createElement("footer");
+          footer.setAttribute("data-vp-footer", "true");
+          footer.style.marginTop = "5rem";
+          footer.style.width = "100%";
+          footer.style.borderRadius = "50px";
+          footer.style.border = "1px solid rgba(71, 85, 105, 0.5)";
+          footer.style.padding = "clamp(32px, 5vw, 80px)";
+          footer.style.color = "rgba(203, 213, 225, 0.85)";
+          footer.style.background = "transparent";
+
+          var row = document.createElement("div");
+          row.style.display = "flex";
+          row.style.flexWrap = "wrap";
+          row.style.gap = "16px";
+          row.style.alignItems = "center";
+          row.style.justifyContent = "space-between";
+
+          var brand = document.createElement("div");
+          brand.style.display = "flex";
+          brand.style.flexDirection = "column";
+          brand.style.gap = "4px";
+
+          var title = document.createElement("p");
+          title.textContent = "Vertical Partners";
+          title.style.fontSize = "16px";
+          title.style.fontWeight = "600";
+          title.style.color = "#e2e8f0";
+
+          var subtitle = document.createElement("p");
+          subtitle.textContent = "IA aplicada para acelerar crescimento e eficiência.";
+          subtitle.style.fontSize = "12px";
+          subtitle.style.color = "rgba(203, 213, 225, 0.75)";
+
+          brand.appendChild(title);
+          brand.appendChild(subtitle);
+
+          var links = document.createElement("div");
+          links.style.display = "flex";
+          links.style.flexWrap = "wrap";
+          links.style.gap = "12px";
+          links.style.fontSize = "12px";
+          links.style.color = "rgba(203, 213, 225, 0.75)";
+
+          var terms = document.createElement("a");
+          terms.href = "/termos-de-uso";
+          terms.textContent = "Termos";
+          terms.style.padding = "4px 12px";
+          terms.style.border = "1px solid rgba(203, 213, 225, 0.4)";
+          terms.style.borderRadius = "999px";
+          terms.style.textDecoration = "none";
+          terms.style.color = "inherit";
+
+          var privacy = document.createElement("a");
+          privacy.href = "/politica-de-privacidade";
+          privacy.textContent = "Privacidade";
+          privacy.style.padding = "4px 12px";
+          privacy.style.border = "1px solid rgba(203, 213, 225, 0.4)";
+          privacy.style.borderRadius = "999px";
+          privacy.style.textDecoration = "none";
+          privacy.style.color = "inherit";
+
+          var contact = document.createElement("span");
+          contact.textContent = "Contato";
+          contact.style.padding = "4px 12px";
+          contact.style.border = "1px solid rgba(203, 213, 225, 0.4)";
+          contact.style.borderRadius = "999px";
+
+          links.appendChild(terms);
+          links.appendChild(privacy);
+          links.appendChild(contact);
+
+          row.appendChild(brand);
+          row.appendChild(links);
+
+          var legal = document.createElement("div");
+          legal.style.marginTop = "16px";
+          legal.style.fontSize = "12px";
+          legal.style.color = "rgba(203, 213, 225, 0.7)";
+          legal.textContent =
+            "© " +
+            new Date().getFullYear() +
+            " Vertical Partners. Todos os direitos reservados.";
+
+          footer.appendChild(row);
+          footer.appendChild(legal);
+          wrapper.appendChild(footer);
+          return wrapper;
+        };
+
+        var replaceFooter = function () {
+          var footers = document.querySelectorAll(
+            "footer,[data-vp-footer-wrapper]"
+          );
+          footers.forEach(function (footer) {
+            footer.remove();
+          });
+        };
+
+        var centerInstagramModal = function () {
+          var inputs = document.querySelectorAll('input[placeholder*="@"]');
+          var targetInput = null;
+          inputs.forEach(function (input) {
+            if (!targetInput) {
+              targetInput = input;
+            }
+          });
+
+          if (!targetInput) return;
+
+          var container = targetInput.closest("div");
+          while (container && container !== document.body) {
+            var className = container.className || "";
+            if (
+              className.indexOf("max-w-lg") !== -1 ||
+              className.indexOf("rounded-3xl") !== -1
+            ) {
+              break;
+            }
+            container = container.parentElement;
+          }
+
+          if (!container || container.getAttribute("data-centered") === "true") {
+            return;
+          }
+
+          container.style.marginLeft = "auto";
+          container.style.marginRight = "auto";
+          container.style.alignSelf = "center";
+          container.setAttribute("data-centered", "true");
+        };
+
+        var run = function () {
+          adjustSpacing();
+          tweakTimeline();
+          replaceCard();
+          replaceFooter();
+          centerInstagramModal();
+          if (window.stopAllAudio) {
+            window.stopAllAudio();
+          }
+          if (window.blockAudioPlay) {
+            window.blockAudioPlay();
+          }
+        };
+
+        var observer = new MutationObserver(function () {
+          run();
+        });
+
+        window.addEventListener("load", run);
+        window.addEventListener("resize", tweakTimeline);
+        setTimeout(run, 800);
+
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        var leadIdKey = "vp-lead-id";
+        var leadEndpoint = "/api/leads-funil-1";
+
+        var sendLead = function (payload) {
+          if (!payload) return;
+          var leadName = String(payload.lead_name || "").trim();
+          var rawWhatsapp = payload.whatsapp || "";
+          var digits = String(rawWhatsapp).replace(/\D/g, "");
+          if (leadName.length < 2 || digits.length < 10) {
+            return;
+          }
+          var body = Object.assign({}, payload, { lead_name: leadName });
+          var existingLeadId = localStorage.getItem(leadIdKey);
+          if (existingLeadId && !body.leadId) {
+            body.leadId = existingLeadId;
+          }
+
+          return fetch(leadEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          })
+            .then(function (response) {
+              if (!response.ok) return null;
+              return response.json();
+            })
+            .then(function (data) {
+              if (data && data.id) {
+                localStorage.setItem(leadIdKey, data.id);
+              }
+            })
+            .catch(function () {});
+        };
+
+        var attachForm = function () {
+          var form = document.getElementById("lead-form");
+          if (!form || form.getAttribute("data-lead-bound") === "true") {
+            return;
+          }
+          form.setAttribute("data-lead-bound", "true");
+
+          var nameInput =
+            form.querySelector('input[placeholder="Nome"]') ||
+            form.querySelector('input[name="name"]');
+          var whatsappInput =
+            form.querySelector('input[placeholder*="WhatsApp"]') ||
+            form.querySelector('input[name="whatsapp"]');
+
+          var debounceTimer = null;
+          var lastPayload = "";
+          var scheduleSend = function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+              var nameValue = nameInput ? nameInput.value.trim() : "";
+              var whatsappValue = whatsappInput ? whatsappInput.value : "";
+              var digits = String(whatsappValue).replace(/\D/g, "");
+              if (nameValue.length < 2 || digits.length < 10) {
+                return;
+              }
+              var payloadKey = nameValue + "|" + digits;
+              if (payloadKey === lastPayload) {
+                return;
+              }
+              lastPayload = payloadKey;
+              sendLead({
+                lead_name: nameValue,
+                whatsapp: whatsappValue,
+                source: "lp-funil",
+              });
+            }, 600);
+          };
+
+          if (nameInput) {
+            nameInput.addEventListener("input", scheduleSend);
+          }
+          if (whatsappInput) {
+            whatsappInput.addEventListener("input", scheduleSend);
+          }
+
+          form.addEventListener("submit", function () {
+            var nameValue = nameInput ? nameInput.value.trim() : "";
+            var whatsappValue = whatsappInput ? whatsappInput.value : "";
+            sendLead({
+              lead_name: nameValue,
+              whatsapp: whatsappValue,
+              source: "lp-funil",
+            });
+          });
+        };
+
+        var patchFetch = function () {
+          if (window.__vpLeadFetchPatched) return;
+          window.__vpLeadFetchPatched = true;
+
+          var originalFetch = window.fetch;
+          window.fetch = function (input, init) {
+            var url = "";
+            try {
+              url = typeof input === "string" ? input : input.url || "";
+              if (url.indexOf("/api/generate-diagnostic") !== -1 && init && init.body) {
+                var parsed = JSON.parse(init.body);
+                var leadId = localStorage.getItem(leadIdKey);
+                if (leadId && !parsed.leadId) {
+                  parsed.leadId = leadId;
+                  init.body = JSON.stringify(parsed);
+                }
+              }
+            } catch (error) {}
+            var responsePromise = originalFetch.apply(this, arguments);
+            if (url.indexOf("/api/generate-diagnostic") !== -1) {
+              return responsePromise.then(function (response) {
+                try {
+                  response
+                    .clone()
+                    .json()
+                    .then(function (data) {
+                      if (data && data.leadId) {
+                        localStorage.setItem(leadIdKey, data.leadId);
+                      }
+                    })
+                    .catch(function () {});
+                } catch (error) {}
+                return response;
+              });
+            }
+            return responsePromise;
+          };
+        };
+
+        var observer = new MutationObserver(function () {
+          attachForm();
+        });
+
+        window.addEventListener("load", function () {
+          attachForm();
+          patchFetch();
+        });
+        setTimeout(attachForm, 800);
+
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
+  </body>
+</html>
