@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   let body: { profileData?: unknown } | null = null;
   try {
     body = await request.json();
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
   }
 
@@ -18,12 +18,21 @@ export async function POST(request: Request) {
     );
   }
 
+  const followers =
+    typeof profileData === "object" &&
+    profileData !== null &&
+    "followers" in profileData &&
+    typeof (profileData as { followers?: unknown }).followers === "number"
+      ? (profileData as { followers: number }).followers
+      : null;
+
+  const fallbackMessage = followers
+    ? `Com ${followers} seguidores, você claramente sabe o que está fazendo. Agora, imagine esse alcance com processos otimizados por IA para converter seguidores em clientes.`
+    : "Vimos um grande potencial no seu perfil e acreditamos que podemos ajudar a escalar seus resultados.";
+
   const openAiKey = process.env.OPENAI_API_KEY;
   if (!openAiKey) {
-    return NextResponse.json(
-      { error: "Server configuration error: Missing API Key." },
-      { status: 500 }
-    );
+    return NextResponse.json({ customMessage: fallbackMessage, degraded: true });
   }
 
   const finalPrompt = `
@@ -45,7 +54,7 @@ export async function POST(request: Request) {
     **Exemplos de Saída:**
     - "Percebi que você já tem uma base sólida, mas a sua bio mostra que podemos ir muito além. A Vertical Partners existe para transformar potencial em domínio de mercado."
     - "Sua presença online é boa, mas parece que falta uma peça para escalar de verdade. Estamos aqui para ser essa peça e levar sua operação para o próximo nível."
-    - "Com ${typeof profileData === "object" && profileData !== null && "followers" in profileData ? (profileData as { followers?: number }).followers : "alguns"} seguidores, você claramente sabe o que está fazendo. Agora, imagine esse alcance com processos otimizados por IA para converter seguidores em clientes."
+    - "Com ${followers ?? "alguns"} seguidores, você claramente sabe o que está fazendo. Agora, imagine esse alcance com processos otimizados por IA para converter seguidores em clientes."
 
     **Saída Final (Apenas o texto da mensagem):**
   `;
@@ -76,8 +85,7 @@ export async function POST(request: Request) {
         errorText
       );
       return NextResponse.json(
-        { error: "Ocorreu um erro inesperado." },
-        { status: 500 }
+        { customMessage: fallbackMessage, degraded: true }
       );
     }
 
@@ -86,15 +94,11 @@ export async function POST(request: Request) {
     };
     const message =
       openaiData?.choices?.[0]?.message?.content?.trim() ||
-      "Vimos um grande potencial no seu perfil e acreditamos que podemos ajudar a escalar seus resultados.";
+      fallbackMessage;
 
     return NextResponse.json({ customMessage: message });
   } catch (error) {
     console.error("[API /generate-insta-message] Error:", error);
-    return NextResponse.json(
-      { error: "An unexpected error occurred." },
-      { status: 500 }
-    );
+    return NextResponse.json({ customMessage: fallbackMessage, degraded: true });
   }
 }
-
