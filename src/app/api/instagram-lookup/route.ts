@@ -52,13 +52,6 @@ export async function POST(request: Request) {
   }
 
   const openAiKey = process.env.OPENAI_API_KEY;
-  if (!openAiKey) {
-    console.error("[API /instagram-lookup] FATAL: OPENAI_API_KEY is not set.");
-    return NextResponse.json(
-      { error: "Server configuration error: Missing OpenAI API Key." },
-      { status: 500 }
-    );
-  }
 
   try {
     console.log(
@@ -115,42 +108,60 @@ export async function POST(request: Request) {
       { "businessDescription": "...", "mainChallenge": "..." }
     `;
 
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openAiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: promptForAI }],
-        response_format: { type: "json_object" },
-      }),
-    });
+    let aiAnalysis: { businessDescription?: string; mainChallenge?: string } = {};
 
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text();
-      console.error(
-        "[API /instagram-lookup] OpenAI error:",
-        openaiResponse.status,
-        errorText
+    if (openAiKey) {
+      const openaiResponse = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${openAiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: promptForAI }],
+            response_format: { type: "json_object" },
+          }),
+        }
       );
-      return NextResponse.json(
-        { error: "Falha ao analisar perfil do Instagram." },
-        { status: 500 }
-      );
+
+      if (!openaiResponse.ok) {
+        const errorText = await openaiResponse.text();
+        console.error(
+          "[API /instagram-lookup] OpenAI error:",
+          openaiResponse.status,
+          errorText
+        );
+      } else {
+        const openaiData = (await openaiResponse.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const rawContent = openaiData?.choices?.[0]?.message?.content || "{}";
+
+        try {
+          aiAnalysis = JSON.parse(rawContent);
+        } catch (parseError) {
+          console.error("[API /instagram-lookup] JSON parse error:", parseError);
+        }
+      }
     }
 
-    const openaiData = (await openaiResponse.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    const rawContent = openaiData?.choices?.[0]?.message?.content || "{}";
-
-    let aiAnalysis: { businessDescription?: string; mainChallenge?: string } = {};
-    try {
-      aiAnalysis = JSON.parse(rawContent);
-    } catch (parseError) {
-      console.error("[API /instagram-lookup] JSON parse error:", parseError);
+    if (
+      !aiAnalysis.businessDescription ||
+      !aiAnalysis.mainChallenge
+    ) {
+      const bio = String(formattedProfileData.biography || "").trim();
+      const firstLine = bio.split("\n").map((line) => line.trim()).filter(Boolean)[0] || "";
+      aiAnalysis = {
+        businessDescription:
+          aiAnalysis.businessDescription ||
+          (firstLine ? firstLine.slice(0, 160) : "Negócio informado via Instagram."),
+        mainChallenge:
+          aiAnalysis.mainChallenge ||
+          "Converter audiência em clientes de forma previsível.",
+      };
     }
 
     return NextResponse.json({
@@ -165,4 +176,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
