@@ -683,7 +683,10 @@
                 }
               }
             } catch (error) {}
-            var responsePromise = originalFetch.apply(this, arguments);
+            var responsePromise =
+              arguments.length === 1
+                ? originalFetch.call(this, input)
+                : originalFetch.call(this, input, init);
             if (url.indexOf("/api/generate-diagnostic") !== -1) {
               return responsePromise.then(function (response) {
                 try {
