@@ -550,7 +550,7 @@
     <script>
       (function () {
         var leadIdKey = "vp-lead-id";
-        var leadEndpoint = "/api/leads-funil-1";
+        var leadEndpoint = "api/leads-funil-1";
 
         var sendLead = function (payload) {
           if (!payload) return;
@@ -646,16 +646,34 @@
           var originalFetch = window.fetch;
           window.fetch = function (input, init) {
             var url = "";
-            var shouldFallbackToBasepathApi = false;
             var basePath = "";
             try {
               url = typeof input === "string" ? input : input.url || "";
               basePath = window.location.pathname.indexOf("/lp-funil") === 0 ? "/lp-funil" : "";
-              shouldFallbackToBasepathApi =
-                basePath &&
-                typeof url === "string" &&
-                url.indexOf("/api/") === 0 &&
-                url.indexOf(basePath + "/api/") !== 0;
+              if (basePath && typeof url === "string") {
+                var origin = window.location.origin || "";
+                var needsRewrite =
+                  (url.indexOf("/api/") === 0 && url.indexOf(basePath + "/api/") !== 0) ||
+                  (origin && url.indexOf(origin + "/api/") === 0 && url.indexOf(origin + basePath + "/api/") !== 0);
+
+                if (needsRewrite) {
+                  var rewrittenUrl = "";
+                  if (url.indexOf(origin + "/api/") === 0) {
+                    rewrittenUrl = origin + basePath + url.slice(origin.length);
+                  } else {
+                    rewrittenUrl = basePath + url;
+                  }
+
+                  try {
+                    if (typeof input === "string") {
+                      input = rewrittenUrl;
+                    } else if (input && typeof input === "object" && input.url) {
+                      input = new Request(rewrittenUrl, input);
+                    }
+                    url = rewrittenUrl;
+                  } catch (error) {}
+                }
+              }
               if (url.indexOf("/api/generate-diagnostic") !== -1 && init && init.body) {
                 var parsed = JSON.parse(init.body);
                 var leadId = localStorage.getItem(leadIdKey);
@@ -666,39 +684,6 @@
               }
             } catch (error) {}
             var responsePromise = originalFetch.apply(this, arguments);
-            if (shouldFallbackToBasepathApi) {
-              responsePromise = responsePromise.then(function (response) {
-                if (!response) return response;
-                if (response.status !== 404 && response.status !== 405) {
-                  return response;
-                }
-
-                var fallbackUrl = basePath + url;
-                try {
-                  if (typeof input === "string") {
-                    return originalFetch.call(window, fallbackUrl, init);
-                  }
-                  if (input && typeof input === "object" && input.url) {
-                    var requestInit = {
-                      method: input.method,
-                      headers: input.headers,
-                      body: input.body,
-                      mode: input.mode,
-                      credentials: input.credentials,
-                      cache: input.cache,
-                      redirect: input.redirect,
-                      referrer: input.referrer,
-                      referrerPolicy: input.referrerPolicy,
-                      integrity: input.integrity,
-                      keepalive: input.keepalive,
-                      signal: input.signal,
-                    };
-                    return originalFetch.call(window, fallbackUrl, requestInit);
-                  }
-                } catch (error) {}
-                return response;
-              });
-            }
             if (url.indexOf("/api/generate-diagnostic") !== -1) {
               return responsePromise.then(function (response) {
                 try {
