@@ -550,7 +550,7 @@
     <script>
       (function () {
         var leadIdKey = "vp-lead-id";
-        var leadEndpoint = "/api/leads-funil-1";
+        var leadEndpoint = "api/leads-funil-1";
 
         var sendLead = function (payload) {
           if (!payload) return;
@@ -646,8 +646,34 @@
           var originalFetch = window.fetch;
           window.fetch = function (input, init) {
             var url = "";
+            var basePath = "";
             try {
               url = typeof input === "string" ? input : input.url || "";
+              basePath = window.location.pathname.indexOf("/lp-funil") === 0 ? "/lp-funil" : "";
+              if (basePath && typeof url === "string") {
+                var origin = window.location.origin || "";
+                var needsRewrite =
+                  (url.indexOf("/api/") === 0 && url.indexOf(basePath + "/api/") !== 0) ||
+                  (origin && url.indexOf(origin + "/api/") === 0 && url.indexOf(origin + basePath + "/api/") !== 0);
+
+                if (needsRewrite) {
+                  var rewrittenUrl = "";
+                  if (url.indexOf(origin + "/api/") === 0) {
+                    rewrittenUrl = origin + basePath + url.slice(origin.length);
+                  } else {
+                    rewrittenUrl = basePath + url;
+                  }
+
+                  try {
+                    if (typeof input === "string") {
+                      input = rewrittenUrl;
+                    } else if (input && typeof input === "object" && input.url) {
+                      input = new Request(rewrittenUrl, input);
+                    }
+                    url = rewrittenUrl;
+                  } catch (error) {}
+                }
+              }
               if (url.indexOf("/api/generate-diagnostic") !== -1 && init && init.body) {
                 var parsed = JSON.parse(init.body);
                 var leadId = localStorage.getItem(leadIdKey);
@@ -657,7 +683,10 @@
                 }
               }
             } catch (error) {}
-            var responsePromise = originalFetch.apply(this, arguments);
+            var responsePromise =
+              arguments.length === 1
+                ? originalFetch.call(this, input)
+                : originalFetch.call(this, input, init);
             if (url.indexOf("/api/generate-diagnostic") !== -1) {
               return responsePromise.then(function (response) {
                 try {

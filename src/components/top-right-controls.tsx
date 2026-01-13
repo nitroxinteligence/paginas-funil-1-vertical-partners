@@ -7,12 +7,10 @@ import { Moon, Sun } from "lucide-react";
 const DARK_CLASS = "dark";
 
 export function TopRightControls() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    setIsDark(root.classList.contains(DARK_CLASS));
-  }, []);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof document === "undefined") return true;
+    return document.documentElement.classList.contains(DARK_CLASS);
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle(DARK_CLASS, isDark);
