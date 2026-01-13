@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { FooterGlow } from "@/components/footer-glow";
-import { TopRightControls } from "@/components/top-right-controls";
+import { TopRightControlsGate } from "@/components/top-right-controls-gate";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -25,7 +25,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${dmSans.variable} min-h-screen bg-white font-sans antialiased text-slate-900 dark:bg-black dark:text-white`}
       >
-        <TopRightControls />
+        <TopRightControlsGate />
         <div className="relative z-10 min-h-screen">{children}</div>
         <FooterGlow />
       </body>
