@@ -8,17 +8,77 @@ type DiagnosticPayload = {
   name?: string;
   whatsapp?: string;
   instagram?: string;
-  site?: string;
   industry?: string;
   obstacles?: string[];
   instagramProfile?: unknown;
+};
+
+const buildFallbackDiagnostic = (params: {
+  name: string;
+  industry: string;
+  obstacles: string[];
+  instagramProfile?: unknown;
+}) => {
+  const bio =
+    params.instagramProfile &&
+    typeof params.instagramProfile === "object" &&
+    ("biography" in params.instagramProfile || "bio" in params.instagramProfile)
+      ? String(
+          (params.instagramProfile as { biography?: unknown; bio?: unknown })
+            .biography ??
+            (params.instagramProfile as { biography?: unknown; bio?: unknown }).bio ??
+            ""
+        ).trim()
+      : "";
+
+  const niche = bio ? bio.split("\n").map((line) => line.trim()).filter(Boolean)[0] : "";
+  const context = niche || params.industry;
+  const obstaclePreview = params.obstacles.slice(0, 2).join(" e ");
+
+  const solutions = params.obstacles.map((obstacle) => {
+    const value = String(obstacle || "").toLowerCase();
+
+    if (
+      value.includes("operacional") ||
+      value.includes("sobrecarreg") ||
+      value.includes("time está sobrecarregado") ||
+      value.includes("preciso de ia")
+    ) {
+      return "**Automação de Processos:** Implementamos agentes e automações para tirar tarefas repetitivas do time e liberar capacidade imediata.";
+    }
+
+    if (value.includes("leads") && (value.includes("desqual") || value.includes("ruim"))) {
+      return "**Agente de Qualificação com IA:** Filtra e qualifica 100% dos leads, entregando só oportunidades prontas para avançar.";
+    }
+
+    if (value.includes("atendimento") || value.includes("suporte") || value.includes("resposta")) {
+      return "**Agente de Atendimento 24/7:** Responde rápido, resolve dúvidas e aumenta conversão sem aumentar headcount.";
+    }
+
+    if (value.includes("vendas") || value.includes("convers") || value.includes("fechar")) {
+      return "**Agente de Vendas com IA:** Nutre e faz follow-up automaticamente para aumentar taxa de conversão e reduzir perda de leads.";
+    }
+
+    if (value.includes("marketing") || value.includes("conteúdo") || value.includes("criativ")) {
+      return "**Análise e Otimização com IA:** Identifica gargalos e oportunidades e orienta as próximas ações com base em dados.";
+    }
+
+    return "**Ecossistema RAA:** Combinamos qualificação, vendas e automações operacionais para resolver o gargalo com previsibilidade.";
+  });
+
+  const personalizedSummary = `${params.name}, olhando o seu contexto (${context}), dá para ver que o gargalo principal está em ${obstaclePreview || "capacidade operacional e previsibilidade"}. A Vertical Partners aplica IA e automação para reduzir carga manual, padronizar o processo e acelerar o crescimento sem depender de mais pessoas. Com o ecossistema RAA, você ganha velocidade, consistência e escala com menos fricção.`;
+
+  return {
+    personalizedSummary,
+    timelineSolutions: solutions,
+  };
 };
 
 export async function POST(request: Request) {
   let body: DiagnosticPayload | null = null;
   try {
     body = await request.json();
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
   }
 
@@ -27,7 +87,6 @@ export async function POST(request: Request) {
     name,
     whatsapp,
     instagram,
-    site,
     industry,
     obstacles,
     instagramProfile,
@@ -41,12 +100,6 @@ export async function POST(request: Request) {
   }
 
   const openAiKey = process.env.OPENAI_API_KEY;
-  if (!openAiKey) {
-    return NextResponse.json(
-      { error: "Server configuration error: Missing API Key." },
-      { status: 500 }
-    );
-  }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey =
@@ -111,50 +164,71 @@ export async function POST(request: Request) {
   `;
 
   try {
-    const openaiResponse = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${openAiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          messages: [{ role: "user", content: finalPrompt }],
-          response_format: { type: "json_object" },
-        }),
-      }
-    );
-
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text();
-      console.error(
-        "[API /generate-diagnostic] OpenAI error:",
-        openaiResponse.status,
-        errorText
-      );
-      return NextResponse.json(
-        { error: "An unexpected error occurred." },
-        { status: 500 }
-      );
-    }
-
-    const openaiData = (await openaiResponse.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-
-    const rawContent = openaiData?.choices?.[0]?.message?.content || "{}";
-
+    let degraded = false;
     let diagnostic: Record<string, unknown> = {};
-    try {
-      diagnostic = JSON.parse(rawContent);
-    } catch (parseError) {
-      console.error("[API /generate-diagnostic] JSON parse error:", parseError);
-      return NextResponse.json(
-        { error: "Failed to parse diagnostic response." },
-        { status: 500 }
+
+    if (!openAiKey) {
+      degraded = true;
+      diagnostic = buildFallbackDiagnostic({
+        name,
+        industry,
+        obstacles,
+        instagramProfile,
+      });
+    } else {
+      const openaiResponse = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${openAiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: finalPrompt }],
+            response_format: { type: "json_object" },
+          }),
+        }
       );
+
+      if (!openaiResponse.ok) {
+        const errorText = await openaiResponse.text();
+        console.error(
+          "[API /generate-diagnostic] OpenAI error:",
+          openaiResponse.status,
+          errorText
+        );
+        degraded = true;
+        diagnostic = buildFallbackDiagnostic({
+          name,
+          industry,
+          obstacles,
+          instagramProfile,
+        });
+      } else {
+        const openaiData = (await openaiResponse.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+
+        const rawContent = openaiData?.choices?.[0]?.message?.content || "{}";
+
+        try {
+          diagnostic = JSON.parse(rawContent);
+        } catch (parseError) {
+          console.error(
+            "[API /generate-diagnostic] JSON parse error:",
+            parseError
+          );
+          degraded = true;
+          diagnostic = buildFallbackDiagnostic({
+            name,
+            industry,
+            obstacles,
+            instagramProfile,
+          });
+        }
+      }
     }
 
     let savedLeadId: string | null = leadId ?? null;
@@ -167,7 +241,7 @@ export async function POST(request: Request) {
               bio?: string;
               biography?: string;
               followers?: number;
-            })
+          })
           : null;
 
       const leadPayload = {
@@ -251,13 +325,15 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ ...diagnostic, leadId: savedLeadId });
+    return NextResponse.json({ ...diagnostic, leadId: savedLeadId, degraded });
   } catch (error) {
     console.error("[API /generate-diagnostic] Error:", error);
-    return NextResponse.json(
-      { error: "An unexpected error occurred." },
-      { status: 500 }
-    );
+    const fallback = buildFallbackDiagnostic({
+      name,
+      industry,
+      obstacles,
+      instagramProfile,
+    });
+    return NextResponse.json({ ...fallback, leadId: leadId ?? null, degraded: true });
   }
 }
-
